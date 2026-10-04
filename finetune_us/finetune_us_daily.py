@@ -1,4 +1,4 @@
-"""Ajuste fino del predictor Kronos-small con velas diarias de acciones de EE. UU. (CPU).
+"""Ajuste fino del predictor Kronos-base con velas diarias de acciones de EE. UU. (CPU).
 El tokenizer se mantiene congelado. Los datos de entrenamiento terminan en CUTOFF para
 que el backtest de NKE posterior a esa fecha no contenga fuga de informacion."""
 import sys, time, random; sys.path.insert(0, '.')
@@ -12,8 +12,8 @@ TICKERS = ["NKE", "AAPL", "MSFT", "AMZN", "GOOGL", "META", "NVDA", "TSLA", "JPM"
            "DECK", "SKX", "TPR", "PVH", "RL", "CROX", "ADDYY", "FL", "ULTA"]
 CUTOFF = "2026-09-04"          # inicio del backtest de NKE (excluido del entrenamiento)
 LOOKBACK, PRED, CLIP = 200, 20, 5.0
-STEPS, BATCH, LR = 800, 16, 2e-5
-SAVE = "finetune_us/kronos_small_us_daily"
+STEPS, BATCH, LR = 400, 16, 1e-5
+SAVE = "finetune_us/kronos_base_us_daily"
 COLS = ['open', 'high', 'low', 'close', 'volume', 'amount']
 torch.manual_seed(0); random.seed(0); np.random.seed(0)
 torch.set_num_threads(4)
@@ -48,7 +48,7 @@ def batch(split):
     return torch.tensor(np.stack(xs)), torch.tensor(np.stack(ss))
 
 tok = KronosTokenizer.from_pretrained("NeoQuasar/Kronos-Tokenizer-base").eval()
-model = Kronos.from_pretrained("NeoQuasar/Kronos-small")
+model = Kronos.from_pretrained("NeoQuasar/Kronos-base")
 for p in tok.parameters(): p.requires_grad_(False)
 
 def step_loss(x, st):
