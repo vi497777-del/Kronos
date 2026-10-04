@@ -10,7 +10,7 @@ raw.columns = raw.columns.get_level_values(0)
 df = pd.DataFrame({"timestamps": raw.index, "open": raw.Open.values, "high": raw.High.values,
                    "low": raw.Low.values, "close": raw.Close.values, "volume": raw.Volume.values})
 df["amount"] = df.volume * df[["open","high","low","close"]].mean(axis=1)
-cols = ['open','high','low','close','volume','amount']; L, P, N = 400, 20, 30
+cols = ['open','high','low','close','volume','amount']; L, P, N = int(sys.argv[4]) if len(sys.argv) > 4 else 400, 20, 30
 
 def sim(end):  # N trayectorias independientes usando contexto que termina en 'end'
     x = df.iloc[end-L:end]; xt = x.timestamps.reset_index(drop=True)
